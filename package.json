@@ -1,6 +1,5 @@
 {
   "name": "react-waterfall-timeline",
-  "private": true,
   "version": "1.0.0",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -25,7 +24,9 @@
   "scripts": {
     "dev": "npm run storybook",
     "build": "vite build",
+    "prepare": "vite build",
     "lint": "eslint .",
+    "release": "npm publish --registry=https://registry.npmjs.com/",
     "prettier": "prettier --write .",
     "preview": "vite preview",
     "storybook": "storybook dev -p 6006",
