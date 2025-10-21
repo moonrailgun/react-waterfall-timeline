@@ -1,10 +1,32 @@
 {
   "name": "react-waterfall-timeline",
-  "version": "1.0.0",
+  "version": "1.0.1",
+  "description": "A waterfall timeline component similar to Chrome DevTools Network panel for visualizing time-based data",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
+  "keywords": [
+    "react",
+    "waterfall",
+    "timeline",
+    "chart",
+    "visualization",
+    "performance",
+    "network",
+    "devtools",
+    "gantt"
+  ],
+  "author": "moonrailgun",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/moonrailgun/react-waterfall-timeline.git"
+  },
+  "bugs": {
+    "url": "https://github.com/moonrailgun/react-waterfall-timeline/issues"
+  },
+  "homepage": "https://github.com/moonrailgun/react-waterfall-timeline#readme",
   "exports": {
     ".": {
       "import": {
