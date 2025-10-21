@@ -96,7 +96,7 @@ export const WaterfallItem: React.FC<WaterfallItemProps> = ({
     onClick?.(item);
   };
 
-  const barColor = item.color || '#9ca3af';
+  const barColor = item.color || '#cccccc';
 
   return (
     <div className="waterfall-item" style={{ height: `${height}px` }}>
