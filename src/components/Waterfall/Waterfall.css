@@ -20,6 +20,7 @@
 }
 
 .waterfall-header-label {
+  width: var(--label-width, 200px);
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -176,11 +177,23 @@
   top: 50%;
   transform: translateY(-50%);
   height: 60%;
-  min-width: 2px;
+  min-width: 30px;
   border-radius: 2px;
   cursor: pointer;
   transition: all 0.15s ease;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Gradient fade effect for items without endTime (in-progress) - inspired by Linear */
+.waterfall-item-bar.dashed {
+  background: linear-gradient(
+    to right,
+    currentColor 0%,
+    currentColor 60%,
+    transparent 100%
+  ) !important;
+  box-shadow: none;
+  opacity: 0.6;
 }
 
 .waterfall-item-bar:hover,
@@ -189,6 +202,13 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   z-index: 10;
   height: 70%;
+}
+
+/* Gradient fade bars don't have box-shadow on hover */
+.waterfall-item-bar.dashed:hover,
+.waterfall-item-bar.dashed.hovered {
+  box-shadow: none;
+  opacity: 0.8;
 }
 
 /* Tooltip */
@@ -227,11 +247,6 @@
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-  .waterfall-header-label,
-  .waterfall-item-label {
-    width: 120px;
-  }
-
   .waterfall-ruler-tick-label {
     font-size: 9px;
   }

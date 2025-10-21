@@ -2,14 +2,40 @@ import type { TimeRange, RulerTick, WaterfallItem } from './types';
 
 /**
  * Calculate the time range from waterfall items
+ * For items without endTime, we extend the range to give them visual space
  */
 export function calculateTimeRange(items: WaterfallItem[]): TimeRange {
-  if (items.length === 0) {
+  // Filter items that have startTime
+  const validItems = items.filter((item) => item.startTime !== undefined);
+
+  if (validItems.length === 0) {
     return { min: 0, max: 0, duration: 0 };
   }
 
-  const min = Math.min(...items.map((item) => item.startTime));
-  const max = Math.max(...items.map((item) => item.endTime));
+  const min = Math.min(...validItems.map((item) => item.startTime!));
+
+  // Collect all time points
+  const timePoints: number[] = [];
+  let hasInProgressItems = false;
+
+  validItems.forEach((item) => {
+    timePoints.push(item.startTime!);
+    if (item.endTime !== undefined) {
+      timePoints.push(item.endTime);
+    } else {
+      // Item is in progress (no endTime)
+      hasInProgressItems = true;
+    }
+  });
+
+  let max = Math.max(...timePoints);
+
+  // If there are in-progress items, extend the timeline by 20% to show gradient fade
+  if (hasInProgressItems) {
+    const currentDuration = max - min;
+    max = max + currentDuration * 0.2; // Add 20% buffer for in-progress items
+  }
+
   const duration = max - min;
 
   return { min, max, duration };
@@ -101,21 +127,30 @@ export function generateRulerTicks(timeRange: TimeRange): RulerTick[] {
 
 /**
  * Calculate the position and width of a timeline bar
+ * Minimum width is set to ensure visibility
  */
 export function calculateBarPosition(
   startTime: number,
-  endTime: number,
+  endTime: number | undefined,
   timeRange: TimeRange
 ): { left: number; width: number } {
-  const { min, duration } = timeRange;
+  const { min, max, duration } = timeRange;
 
   if (duration === 0) {
     return { left: 0, width: 100 };
   }
 
   const left = ((startTime - min) / duration) * 100;
-  const right = ((endTime - min) / duration) * 100;
-  const width = right - left;
+
+  // If no endTime, extend to the end of the timeline
+  const effectiveEndTime = endTime !== undefined ? endTime : max;
+  const right = ((effectiveEndTime - min) / duration) * 100;
+  let width = right - left;
+
+  // Ensure minimum width of at least 30px equivalent (approximately 1% for typical widths)
+  // This ensures bars are always visible
+  const minWidthPercent = 0.5; // Minimum 0.5% width
+  width = Math.max(width, minWidthPercent);
 
   return { left, width };
 }

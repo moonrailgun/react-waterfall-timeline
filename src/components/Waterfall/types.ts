@@ -6,10 +6,10 @@ export interface WaterfallItem {
   id: string;
   /** Display name shown on the left side */
   name: string;
-  /** Start time in milliseconds */
-  startTime: number;
-  /** End time in milliseconds */
-  endTime: number;
+  /** Start time in milliseconds (optional - if not provided, item won't show on timeline) */
+  startTime?: number;
+  /** End time in milliseconds (optional - if not provided, will show as dashed line) */
+  endTime?: number;
   /** Optional color for the timeline bar */
   color?: string;
 }

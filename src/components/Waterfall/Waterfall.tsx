@@ -74,7 +74,9 @@ export const Waterfall: React.FC<WaterfallProps> = ({
       <div className="waterfall-header">
         <div
           className="waterfall-header-label"
-          style={{ width: `${labelWidth}px` }}
+          style={{
+            '--label-width': `${labelWidth}px`,
+          } as React.CSSProperties}
         >
           <span className="waterfall-header-label-text">Name</span>
         </div>

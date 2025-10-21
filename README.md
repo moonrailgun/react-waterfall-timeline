@@ -22,9 +22,11 @@ A waterfall timeline component similar to Chrome DevTools Network panel for visu
 - 📍 **Time Indicator Line**: Shows vertical indicator line and current time position on hover
 - 🎨 **Customizable Styles**: Supports custom colors, sizes, and other properties
 - 🖱️ **Interactive Experience**: Supports click and hover events with detailed tooltip information
+- 🎯 **Smart Tooltip Positioning**: Tooltips intelligently measure themselves and adjust position based on actual DOM size to avoid viewport overflow
 - 📱 **Responsive Design**: Adapts to different screen sizes
 - ⚡ **High Performance**: Optimized rendering performance using React.memo
 - 🔧 **TypeScript Support**: Complete type definitions
+- ⏳ **Flexible Time States**: Supports items without start time (not started) and items without end time (in progress, shown as dashed lines)
 
 ## 📦 Installation
 
@@ -209,6 +211,83 @@ function App() {
 }
 ```
 
+### In-Progress Tasks
+Items with only `startTime` (no `endTime`) will be displayed with a gradient fade effect (left to right), representing tasks that are currently in progress.
+
+```tsx
+import { Waterfall } from 'react-waterfall-timeline';
+import 'react-waterfall-timeline/style.css';
+
+const inProgressItems = [
+  {
+    id: '1',
+    name: 'completed-task',
+    startTime: 0,
+    endTime: 300,
+    color: '#2ecc71',
+  },
+  {
+    id: '2',
+    name: 'in-progress-1',
+    startTime: 250,
+    // No endTime - shown with gradient fade effect
+    color: '#f39c12',
+  },
+  {
+    id: '3',
+    name: 'in-progress-2',
+    startTime: 400,
+    // No endTime - shown with gradient fade effect
+    color: '#e74c3c',
+  },
+];
+
+function App() {
+  return <Waterfall items={inProgressItems} />;
+}
+```
+
+### Mixed States
+A realistic scenario combining not-started items (no `startTime`), completed items (both times), and in-progress items (no `endTime`).
+
+```tsx
+import { Waterfall } from 'react-waterfall-timeline';
+import 'react-waterfall-timeline/style.css';
+
+const mixedItems = [
+  {
+    id: '1',
+    name: 'not-started-yet',
+    // No startTime - only shows label
+    color: '#95a5a6',
+  },
+  {
+    id: '2',
+    name: 'completed-task',
+    startTime: 0,
+    endTime: 150,
+    color: '#2ecc71',
+  },
+  {
+    id: '3',
+    name: 'in-progress-task',
+    startTime: 160,
+    // No endTime - shown with gradient fade effect
+    color: '#f39c12',
+  },
+  {
+    id: '4',
+    name: 'another-not-started',
+    // No startTime - only shows label
+    color: '#95a5a6',
+  },
+];
+
+function App() {
+  return <Waterfall items={mixedItems} />;
+}
+```
+
 ## 📚 API Documentation
 
 ### `<Waterfall>` Props
@@ -234,16 +313,21 @@ interface WaterfallItem {
   /** Display name shown on the left side */
   name: string;
   
-  /** Start time in milliseconds */
-  startTime: number;
+  /** Start time in milliseconds (optional - if not provided, item won't show on timeline) */
+  startTime?: number;
   
-  /** End time in milliseconds */
-  endTime: number;
+  /** End time in milliseconds (optional - if not provided, will show as dashed line) */
+  endTime?: number;
   
   /** Optional color for the timeline bar (default: #cccccc) */
   color?: string;
 }
 ```
+
+**Time States:**
+- **Both startTime and endTime**: Shows a solid bar representing a completed task
+- **Only startTime (no endTime)**: Shows a gradient fade effect (left to right) extending to the end, representing an in-progress task
+- **No startTime**: Only shows the name label on the left, useful for items that haven't started yet
 
 ### Type Definitions
 

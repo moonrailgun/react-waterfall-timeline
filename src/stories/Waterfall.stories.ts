@@ -238,7 +238,9 @@ export const CustomTooltip: Story = {
     rowHeight: 32,
     rulerHeight: 40,
     renderTooltip: (item, position) => {
-      const duration = item.endTime - item.startTime;
+      const duration = item.endTime !== undefined && item.startTime !== undefined
+        ? item.endTime - item.startTime
+        : null;
       return React.createElement(
         'div',
         {
@@ -261,7 +263,9 @@ export const CustomTooltip: Story = {
           { style: { fontWeight: 'bold', fontSize: '15px', marginBottom: '8px' } },
           `📊 ${item.name}`
         ),
-        React.createElement('div', { style: { opacity: 0.9 } }, `⏱️ Duration: ${duration}ms`),
+        duration !== null
+          ? React.createElement('div', { style: { opacity: 0.9 } }, `⏱️ Duration: ${duration}ms`)
+          : React.createElement('div', { style: { opacity: 0.9 } }, '⏱️ In Progress'),
         React.createElement(
           'div',
           { style: { opacity: 0.9, marginTop: '4px' } },
@@ -324,6 +328,170 @@ export const DefaultColor: Story = {
     docs: {
       description: {
         story: 'Items without color property will use the default gray color (#9ca3af).',
+      },
+    },
+  },
+};
+
+// Items without startTime (won't show on timeline)
+const itemsWithoutStartTime: WaterfallItem[] = [
+  {
+    id: '1',
+    name: 'pending-task-1',
+    color: '#e0e0e0',
+  },
+  {
+    id: '2',
+    name: 'request-1.json',
+    startTime: 0,
+    endTime: 200,
+    color: '#4a90e2',
+  },
+  {
+    id: '3',
+    name: 'pending-task-2',
+    color: '#e0e0e0',
+  },
+  {
+    id: '4',
+    name: 'request-2.json',
+    startTime: 150,
+    endTime: 400,
+    color: '#7b68ee',
+  },
+  {
+    id: '5',
+    name: 'pending-task-3',
+    color: '#e0e0e0',
+  },
+];
+
+export const WithoutStartTime: Story = {
+  args: {
+    items: itemsWithoutStartTime,
+    labelWidth: 200,
+    rowHeight: 32,
+    rulerHeight: 40,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Items without startTime will only show the name label on the left, but won\'t display on the timeline.',
+      },
+    },
+  },
+};
+
+// Items with only startTime (in progress, shown as dashed lines)
+const inProgressItems: WaterfallItem[] = [
+  {
+    id: '1',
+    name: 'completed-task',
+    startTime: 0,
+    endTime: 300,
+    color: '#2ecc71',
+  },
+  {
+    id: '2',
+    name: 'in-progress-1',
+    startTime: 250,
+    color: '#f39c12',
+  },
+  {
+    id: '3',
+    name: 'completed-request',
+    startTime: 400,
+    endTime: 800,
+    color: '#3498db',
+  },
+  {
+    id: '4',
+    name: 'in-progress-2',
+    startTime: 750,
+    color: '#e74c3c',
+  },
+  {
+    id: '5',
+    name: 'in-progress-3',
+    startTime: 900,
+    color: '#9b59b6',
+  },
+];
+
+export const InProgress: Story = {
+  args: {
+    items: inProgressItems,
+    labelWidth: 200,
+    rowHeight: 32,
+    rulerHeight: 40,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Items with only startTime (no endTime) will be displayed as dashed lines extending to the end of the timeline, representing tasks that are currently in progress.',
+      },
+    },
+  },
+};
+
+// Mixed scenario: some without startTime, some in progress, some completed
+const mixedItems: WaterfallItem[] = [
+  {
+    id: '1',
+    name: 'not-started-yet',
+    color: '#95a5a6',
+  },
+  {
+    id: '2',
+    name: 'initial-load',
+    startTime: 0,
+    endTime: 150,
+    color: '#3498db',
+  },
+  {
+    id: '3',
+    name: 'fetch-data',
+    startTime: 160,
+    endTime: 450,
+    color: '#2ecc71',
+  },
+  {
+    id: '4',
+    name: 'processing-data',
+    startTime: 460,
+    color: '#f39c12',
+  },
+  {
+    id: '5',
+    name: 'render-component',
+    startTime: 480,
+    endTime: 680,
+    color: '#e74c3c',
+  },
+  {
+    id: '6',
+    name: 'waiting-for-user',
+    startTime: 700,
+    color: '#9b59b6',
+  },
+  {
+    id: '7',
+    name: 'queued-task',
+    color: '#95a5a6',
+  },
+];
+
+export const MixedStates: Story = {
+  args: {
+    items: mixedItems,
+    labelWidth: 200,
+    rowHeight: 32,
+    rulerHeight: 40,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'A realistic scenario showing: items without startTime (not started), items with both times (completed), and items with only startTime (in progress).',
       },
     },
   },
