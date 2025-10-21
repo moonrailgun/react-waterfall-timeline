@@ -10,11 +10,14 @@
 
     /* Bundler mode */
     "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
-    "verbatimModuleSyntax": true,
+    "allowImportingTsExtensions": false,
+    "verbatimModuleSyntax": false,
     "moduleDetection": "force",
-    "noEmit": true,
     "jsx": "react-jsx",
+
+    /* Type declaration */
+    "declaration": true,
+    "emitDeclarationOnly": false,
 
     /* Linting */
     "strict": true,
