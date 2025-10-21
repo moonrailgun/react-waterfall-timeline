@@ -66,9 +66,25 @@ export function formatTime(ms: number): string {
 function getTickInterval(duration: number): number {
   // Define possible intervals in milliseconds
   const intervals = [
-    1, 2, 5, 10, 20, 50, 100, 200, 500, // milliseconds
-    1000, 2000, 5000, 10000, 20000, 50000, // seconds
-    60000, 120000, 300000, 600000, // minutes
+    1,
+    2,
+    5,
+    10,
+    20,
+    50,
+    100,
+    200,
+    500, // milliseconds
+    1000,
+    2000,
+    5000,
+    10000,
+    20000,
+    50000, // seconds
+    60000,
+    120000,
+    300000,
+    600000, // minutes
   ];
 
   // Target around 5-10 ticks

@@ -8,7 +8,10 @@ export interface WaterfallItemProps {
   height: number;
   onClick?: (item: WaterfallItemType) => void;
   onHover?: (item: WaterfallItemType | null) => void;
-  renderTooltip?: (item: WaterfallItemType, position: { x: number; y: number }) => React.ReactNode;
+  renderTooltip?: (
+    item: WaterfallItemType,
+    position: { x: number; y: number }
+  ) => React.ReactNode;
 }
 
 /**

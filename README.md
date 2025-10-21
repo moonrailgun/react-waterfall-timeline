@@ -46,9 +46,21 @@ import 'react-waterfall-timeline/style.css';
 
 function App() {
   const items = [
-    { id: '1', name: 'index.html', startTime: 0, endTime: 120, color: '#4a90e2' },
+    {
+      id: '1',
+      name: 'index.html',
+      startTime: 0,
+      endTime: 120,
+      color: '#4a90e2',
+    },
     { id: '2', name: 'app.js', startTime: 50, endTime: 300, color: '#7b68ee' },
-    { id: '3', name: 'api/data', startTime: 200, endTime: 450, color: '#feca57' },
+    {
+      id: '3',
+      name: 'api/data',
+      startTime: 200,
+      endTime: 450,
+      color: '#feca57',
+    },
   ];
 
   return <Waterfall items={items} />;
@@ -58,6 +70,7 @@ function App() {
 ## 📸 Examples
 
 ### Basic Timeline
+
 Simple example with a few network requests.
 
 ![Basic Timeline](./screenshots/basic.png)
@@ -110,6 +123,7 @@ function App() {
 ```
 
 ### Complex Timeline
+
 More complex scenario with many overlapping requests of different types.
 
 ![Complex Timeline](./screenshots/complex.png)
@@ -122,18 +136,78 @@ const complexItems = [
   { id: '1', name: 'index.html', startTime: 0, endTime: 85, color: '#4a90e2' },
   { id: '2', name: 'main.js', startTime: 45, endTime: 380, color: '#7b68ee' },
   { id: '3', name: 'vendor.js', startTime: 48, endTime: 520, color: '#7b68ee' },
-  { id: '4', name: 'styles.css', startTime: 52, endTime: 145, color: '#50c878' },
+  {
+    id: '4',
+    name: 'styles.css',
+    startTime: 52,
+    endTime: 145,
+    color: '#50c878',
+  },
   { id: '5', name: 'reset.css', startTime: 55, endTime: 98, color: '#50c878' },
   { id: '6', name: 'logo.svg', startTime: 150, endTime: 280, color: '#ff6b6b' },
-  { id: '7', name: 'icon-home.png', startTime: 155, endTime: 320, color: '#ff6b6b' },
-  { id: '8', name: 'icon-user.png', startTime: 160, endTime: 310, color: '#ff6b6b' },
-  { id: '9', name: 'background.jpg', startTime: 165, endTime: 680, color: '#ff6b6b' },
-  { id: '10', name: 'api/auth', startTime: 400, endTime: 720, color: '#feca57' },
-  { id: '11', name: 'api/user/profile', startTime: 730, endTime: 950, color: '#feca57' },
-  { id: '12', name: 'api/dashboard', startTime: 960, endTime: 1200, color: '#feca57' },
-  { id: '13', name: 'font-regular.woff2', startTime: 200, endTime: 450, color: '#9b59b6' },
-  { id: '14', name: 'font-bold.woff2', startTime: 205, endTime: 470, color: '#9b59b6' },
-  { id: '15', name: 'analytics.js', startTime: 600, endTime: 850, color: '#34495e' },
+  {
+    id: '7',
+    name: 'icon-home.png',
+    startTime: 155,
+    endTime: 320,
+    color: '#ff6b6b',
+  },
+  {
+    id: '8',
+    name: 'icon-user.png',
+    startTime: 160,
+    endTime: 310,
+    color: '#ff6b6b',
+  },
+  {
+    id: '9',
+    name: 'background.jpg',
+    startTime: 165,
+    endTime: 680,
+    color: '#ff6b6b',
+  },
+  {
+    id: '10',
+    name: 'api/auth',
+    startTime: 400,
+    endTime: 720,
+    color: '#feca57',
+  },
+  {
+    id: '11',
+    name: 'api/user/profile',
+    startTime: 730,
+    endTime: 950,
+    color: '#feca57',
+  },
+  {
+    id: '12',
+    name: 'api/dashboard',
+    startTime: 960,
+    endTime: 1200,
+    color: '#feca57',
+  },
+  {
+    id: '13',
+    name: 'font-regular.woff2',
+    startTime: 200,
+    endTime: 450,
+    color: '#9b59b6',
+  },
+  {
+    id: '14',
+    name: 'font-bold.woff2',
+    startTime: 205,
+    endTime: 470,
+    color: '#9b59b6',
+  },
+  {
+    id: '15',
+    name: 'analytics.js',
+    startTime: 600,
+    endTime: 850,
+    color: '#34495e',
+  },
 ];
 
 function App() {
@@ -142,6 +216,7 @@ function App() {
 ```
 
 ### Overlapping Requests
+
 Common scenario with multiple overlapping requests running in parallel.
 
 ![Overlapping Requests](./screenshots/overlapping.png)
@@ -152,11 +227,41 @@ import 'react-waterfall-timeline/style.css';
 
 const overlappingItems = [
   { id: '1', name: 'request-1', startTime: 0, endTime: 500, color: '#3498db' },
-  { id: '2', name: 'request-2', startTime: 100, endTime: 400, color: '#2ecc71' },
-  { id: '3', name: 'request-3', startTime: 200, endTime: 600, color: '#e74c3c' },
-  { id: '4', name: 'request-4', startTime: 250, endTime: 450, color: '#f39c12' },
-  { id: '5', name: 'request-5', startTime: 500, endTime: 800, color: '#9b59b6' },
-  { id: '6', name: 'request-6', startTime: 550, endTime: 750, color: '#1abc9c' },
+  {
+    id: '2',
+    name: 'request-2',
+    startTime: 100,
+    endTime: 400,
+    color: '#2ecc71',
+  },
+  {
+    id: '3',
+    name: 'request-3',
+    startTime: 200,
+    endTime: 600,
+    color: '#e74c3c',
+  },
+  {
+    id: '4',
+    name: 'request-4',
+    startTime: 250,
+    endTime: 450,
+    color: '#f39c12',
+  },
+  {
+    id: '5',
+    name: 'request-5',
+    startTime: 500,
+    endTime: 800,
+    color: '#9b59b6',
+  },
+  {
+    id: '6',
+    name: 'request-6',
+    startTime: 550,
+    endTime: 750,
+    color: '#1abc9c',
+  },
 ];
 
 function App() {
@@ -165,6 +270,7 @@ function App() {
 ```
 
 ### Default Color (Gray)
+
 Items without a custom color will use the default gray color.
 
 ![Default Color](./screenshots/default-color.png)
@@ -212,6 +318,7 @@ function App() {
 ```
 
 ### In-Progress Tasks
+
 Items with only `startTime` (no `endTime`) will be displayed with a gradient fade effect (left to right), representing tasks that are currently in progress.
 
 ```tsx
@@ -248,6 +355,7 @@ function App() {
 ```
 
 ### Mixed States
+
 A realistic scenario combining not-started items (no `startTime`), completed items (both times), and in-progress items (no `endTime`).
 
 ```tsx
@@ -292,16 +400,16 @@ function App() {
 
 ### `<Waterfall>` Props
 
-| Property | Type | Default | Description |
-|----------|------|---------|-------------|
-| `items` | `WaterfallItem[]` | **Required** | Array of timeline data to display |
-| `labelWidth` | `number` | `200` | Width of the left label column (pixels) |
-| `rowHeight` | `number` | `32` | Height of each row (pixels) |
-| `rulerHeight` | `number` | `40` | Height of the ruler (pixels) |
-| `onItemClick` | `(item: WaterfallItem) => void` | `undefined` | Callback function when an item is clicked |
-| `onItemHover` | `(item: WaterfallItem \| null) => void` | `undefined` | Callback function when an item is hovered |
-| `renderTooltip` | `RenderTooltipCallback` | `undefined` | Custom tooltip render function |
-| `className` | `string` | `''` | Custom CSS class name |
+| Property        | Type                                    | Default      | Description                               |
+| --------------- | --------------------------------------- | ------------ | ----------------------------------------- |
+| `items`         | `WaterfallItem[]`                       | **Required** | Array of timeline data to display         |
+| `labelWidth`    | `number`                                | `200`        | Width of the left label column (pixels)   |
+| `rowHeight`     | `number`                                | `32`         | Height of each row (pixels)               |
+| `rulerHeight`   | `number`                                | `40`         | Height of the ruler (pixels)              |
+| `onItemClick`   | `(item: WaterfallItem) => void`         | `undefined`  | Callback function when an item is clicked |
+| `onItemHover`   | `(item: WaterfallItem \| null) => void` | `undefined`  | Callback function when an item is hovered |
+| `renderTooltip` | `RenderTooltipCallback`                 | `undefined`  | Custom tooltip render function            |
+| `className`     | `string`                                | `''`         | Custom CSS class name                     |
 
 ### `WaterfallItem` Interface
 
@@ -309,22 +417,23 @@ function App() {
 interface WaterfallItem {
   /** Unique identifier for the item */
   id: string;
-  
+
   /** Display name shown on the left side */
   name: string;
-  
+
   /** Start time in milliseconds (optional - if not provided, item won't show on timeline) */
   startTime?: number;
-  
+
   /** End time in milliseconds (optional - if not provided, will show as dashed line) */
   endTime?: number;
-  
+
   /** Optional color for the timeline bar (default: #cccccc) */
   color?: string;
 }
 ```
 
 **Time States:**
+
 - **Both startTime and endTime**: Shows a solid bar representing a completed task
 - **Only startTime (no endTime)**: Shows a gradient fade effect (left to right) extending to the end, representing an in-progress task
 - **No startTime**: Only shows the name label on the left, useful for items that haven't started yet
@@ -335,7 +444,7 @@ interface WaterfallItem {
 type OnItemClickCallback = (item: WaterfallItem) => void;
 type OnItemHoverCallback = (item: WaterfallItem | null) => void;
 type RenderTooltipCallback = (
-  item: WaterfallItem, 
+  item: WaterfallItem,
   position: { x: number; y: number }
 ) => React.ReactNode;
 ```

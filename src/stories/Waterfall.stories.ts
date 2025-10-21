@@ -93,18 +93,78 @@ const complexItems: WaterfallItem[] = [
   { id: '1', name: 'index.html', startTime: 0, endTime: 85, color: '#4a90e2' },
   { id: '2', name: 'main.js', startTime: 45, endTime: 380, color: '#7b68ee' },
   { id: '3', name: 'vendor.js', startTime: 48, endTime: 520, color: '#7b68ee' },
-  { id: '4', name: 'styles.css', startTime: 52, endTime: 145, color: '#50c878' },
+  {
+    id: '4',
+    name: 'styles.css',
+    startTime: 52,
+    endTime: 145,
+    color: '#50c878',
+  },
   { id: '5', name: 'reset.css', startTime: 55, endTime: 98, color: '#50c878' },
   { id: '6', name: 'logo.svg', startTime: 150, endTime: 280, color: '#ff6b6b' },
-  { id: '7', name: 'icon-home.png', startTime: 155, endTime: 320, color: '#ff6b6b' },
-  { id: '8', name: 'icon-user.png', startTime: 160, endTime: 310, color: '#ff6b6b' },
-  { id: '9', name: 'background.jpg', startTime: 165, endTime: 680, color: '#ff6b6b' },
-  { id: '10', name: 'api/auth', startTime: 400, endTime: 720, color: '#feca57' },
-  { id: '11', name: 'api/user/profile', startTime: 730, endTime: 950, color: '#feca57' },
-  { id: '12', name: 'api/dashboard', startTime: 960, endTime: 1200, color: '#feca57' },
-  { id: '13', name: 'font-regular.woff2', startTime: 200, endTime: 450, color: '#9b59b6' },
-  { id: '14', name: 'font-bold.woff2', startTime: 205, endTime: 470, color: '#9b59b6' },
-  { id: '15', name: 'analytics.js', startTime: 600, endTime: 850, color: '#34495e' },
+  {
+    id: '7',
+    name: 'icon-home.png',
+    startTime: 155,
+    endTime: 320,
+    color: '#ff6b6b',
+  },
+  {
+    id: '8',
+    name: 'icon-user.png',
+    startTime: 160,
+    endTime: 310,
+    color: '#ff6b6b',
+  },
+  {
+    id: '9',
+    name: 'background.jpg',
+    startTime: 165,
+    endTime: 680,
+    color: '#ff6b6b',
+  },
+  {
+    id: '10',
+    name: 'api/auth',
+    startTime: 400,
+    endTime: 720,
+    color: '#feca57',
+  },
+  {
+    id: '11',
+    name: 'api/user/profile',
+    startTime: 730,
+    endTime: 950,
+    color: '#feca57',
+  },
+  {
+    id: '12',
+    name: 'api/dashboard',
+    startTime: 960,
+    endTime: 1200,
+    color: '#feca57',
+  },
+  {
+    id: '13',
+    name: 'font-regular.woff2',
+    startTime: 200,
+    endTime: 450,
+    color: '#9b59b6',
+  },
+  {
+    id: '14',
+    name: 'font-bold.woff2',
+    startTime: 205,
+    endTime: 470,
+    color: '#9b59b6',
+  },
+  {
+    id: '15',
+    name: 'analytics.js',
+    startTime: 600,
+    endTime: 850,
+    color: '#34495e',
+  },
 ];
 
 export const Complex: Story = {
@@ -139,11 +199,41 @@ export const SingleItem: Story = {
 // Overlapping requests (common in real scenarios)
 const overlappingItems: WaterfallItem[] = [
   { id: '1', name: 'request-1', startTime: 0, endTime: 500, color: '#3498db' },
-  { id: '2', name: 'request-2', startTime: 100, endTime: 400, color: '#2ecc71' },
-  { id: '3', name: 'request-3', startTime: 200, endTime: 600, color: '#e74c3c' },
-  { id: '4', name: 'request-4', startTime: 250, endTime: 450, color: '#f39c12' },
-  { id: '5', name: 'request-5', startTime: 500, endTime: 800, color: '#9b59b6' },
-  { id: '6', name: 'request-6', startTime: 550, endTime: 750, color: '#1abc9c' },
+  {
+    id: '2',
+    name: 'request-2',
+    startTime: 100,
+    endTime: 400,
+    color: '#2ecc71',
+  },
+  {
+    id: '3',
+    name: 'request-3',
+    startTime: 200,
+    endTime: 600,
+    color: '#e74c3c',
+  },
+  {
+    id: '4',
+    name: 'request-4',
+    startTime: 250,
+    endTime: 450,
+    color: '#f39c12',
+  },
+  {
+    id: '5',
+    name: 'request-5',
+    startTime: 500,
+    endTime: 800,
+    color: '#9b59b6',
+  },
+  {
+    id: '6',
+    name: 'request-6',
+    startTime: 550,
+    endTime: 750,
+    color: '#1abc9c',
+  },
 ];
 
 export const Overlapping: Story = {
@@ -159,9 +249,21 @@ export const Overlapping: Story = {
 const shortItems: WaterfallItem[] = [
   { id: '1', name: 'cached-1.js', startTime: 0, endTime: 15, color: '#27ae60' },
   { id: '2', name: 'cached-2.js', startTime: 5, endTime: 22, color: '#27ae60' },
-  { id: '3', name: 'cached-3.css', startTime: 10, endTime: 28, color: '#27ae60' },
+  {
+    id: '3',
+    name: 'cached-3.css',
+    startTime: 10,
+    endTime: 28,
+    color: '#27ae60',
+  },
   { id: '4', name: 'api-fast', startTime: 30, endTime: 85, color: '#16a085' },
-  { id: '5', name: 'cached-image.png', startTime: 40, endTime: 58, color: '#27ae60' },
+  {
+    id: '5',
+    name: 'cached-image.png',
+    startTime: 40,
+    endTime: 58,
+    color: '#27ae60',
+  },
 ];
 
 export const FastRequests: Story = {
@@ -175,12 +277,48 @@ export const FastRequests: Story = {
 
 // Long duration with varied timings
 const longDurationItems: WaterfallItem[] = [
-  { id: '1', name: 'quick-initial', startTime: 0, endTime: 150, color: '#3498db' },
-  { id: '2', name: 'medium-load', startTime: 200, endTime: 1500, color: '#f39c12' },
-  { id: '3', name: 'very-slow-api', startTime: 500, endTime: 5000, color: '#e74c3c' },
-  { id: '4', name: 'parallel-1', startTime: 1600, endTime: 3200, color: '#9b59b6' },
-  { id: '5', name: 'parallel-2', startTime: 1650, endTime: 3100, color: '#9b59b6' },
-  { id: '6', name: 'final-request', startTime: 5100, endTime: 6200, color: '#2ecc71' },
+  {
+    id: '1',
+    name: 'quick-initial',
+    startTime: 0,
+    endTime: 150,
+    color: '#3498db',
+  },
+  {
+    id: '2',
+    name: 'medium-load',
+    startTime: 200,
+    endTime: 1500,
+    color: '#f39c12',
+  },
+  {
+    id: '3',
+    name: 'very-slow-api',
+    startTime: 500,
+    endTime: 5000,
+    color: '#e74c3c',
+  },
+  {
+    id: '4',
+    name: 'parallel-1',
+    startTime: 1600,
+    endTime: 3200,
+    color: '#9b59b6',
+  },
+  {
+    id: '5',
+    name: 'parallel-2',
+    startTime: 1650,
+    endTime: 3100,
+    color: '#9b59b6',
+  },
+  {
+    id: '6',
+    name: 'final-request',
+    startTime: 5100,
+    endTime: 6200,
+    color: '#2ecc71',
+  },
 ];
 
 export const LongDuration: Story = {
@@ -224,7 +362,8 @@ export const WithInteractions: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Click on items or hover over them to see the interaction callbacks in the Actions panel.',
+        story:
+          'Click on items or hover over them to see the interaction callbacks in the Actions panel.',
       },
     },
   },
@@ -238,9 +377,10 @@ export const CustomTooltip: Story = {
     rowHeight: 32,
     rulerHeight: 40,
     renderTooltip: (item, position) => {
-      const duration = item.endTime !== undefined && item.startTime !== undefined
-        ? item.endTime - item.startTime
-        : null;
+      const duration =
+        item.endTime !== undefined && item.startTime !== undefined
+          ? item.endTime - item.startTime
+          : null;
       return React.createElement(
         'div',
         {
@@ -260,12 +400,26 @@ export const CustomTooltip: Story = {
         },
         React.createElement(
           'div',
-          { style: { fontWeight: 'bold', fontSize: '15px', marginBottom: '8px' } },
+          {
+            style: {
+              fontWeight: 'bold',
+              fontSize: '15px',
+              marginBottom: '8px',
+            },
+          },
           `📊 ${item.name}`
         ),
         duration !== null
-          ? React.createElement('div', { style: { opacity: 0.9 } }, `⏱️ Duration: ${duration}ms`)
-          : React.createElement('div', { style: { opacity: 0.9 } }, '⏱️ In Progress'),
+          ? React.createElement(
+              'div',
+              { style: { opacity: 0.9 } },
+              `⏱️ Duration: ${duration}ms`
+            )
+          : React.createElement(
+              'div',
+              { style: { opacity: 0.9 } },
+              '⏱️ In Progress'
+            ),
         React.createElement(
           'div',
           { style: { opacity: 0.9, marginTop: '4px' } },
@@ -277,7 +431,8 @@ export const CustomTooltip: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Example with a custom tooltip renderer. Hover over items to see the custom tooltip design.',
+        story:
+          'Example with a custom tooltip renderer. Hover over items to see the custom tooltip design.',
       },
     },
   },
@@ -327,7 +482,8 @@ export const DefaultColor: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Items without color property will use the default gray color (#9ca3af).',
+        story:
+          'Items without color property will use the default gray color (#9ca3af).',
       },
     },
   },
@@ -376,7 +532,8 @@ export const WithoutStartTime: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Items without startTime will only show the name label on the left, but won\'t display on the timeline.',
+        story:
+          "Items without startTime will only show the name label on the left, but won't display on the timeline.",
       },
     },
   },
@@ -428,7 +585,8 @@ export const InProgress: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Items with only startTime (no endTime) will be displayed as dashed lines extending to the end of the timeline, representing tasks that are currently in progress.',
+        story:
+          'Items with only startTime (no endTime) will be displayed as dashed lines extending to the end of the timeline, representing tasks that are currently in progress.',
       },
     },
   },
@@ -491,7 +649,8 @@ export const MixedStates: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'A realistic scenario showing: items without startTime (not started), items with both times (completed), and items with only startTime (in progress).',
+        story:
+          'A realistic scenario showing: items without startTime (not started), items with both times (completed), and items with only startTime (in progress).',
       },
     },
   },

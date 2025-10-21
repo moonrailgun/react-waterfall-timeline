@@ -19,7 +19,10 @@ export type OnItemClickCallback = (item: WaterfallItem) => void;
 export type OnItemHoverCallback = (item: WaterfallItem | null) => void;
 
 // Tooltip render function type
-export type RenderTooltipCallback = (item: WaterfallItem, position: { x: number; y: number }) => React.ReactNode;
+export type RenderTooltipCallback = (
+  item: WaterfallItem,
+  position: { x: number; y: number }
+) => React.ReactNode;
 
 // Main component props
 export interface WaterfallProps {

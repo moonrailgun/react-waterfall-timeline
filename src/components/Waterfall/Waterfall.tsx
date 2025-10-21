@@ -21,11 +21,16 @@ export const Waterfall: React.FC<WaterfallProps> = ({
 }) => {
   const timeRange = useMemo(() => calculateTimeRange(items), [items]);
 
-  const [cursorPosition, setCursorPosition] = useState<{ x: number; time: number } | null>(null);
+  const [cursorPosition, setCursorPosition] = useState<{
+    x: number;
+    time: number;
+  } | null>(null);
   const timelineRef = useRef<HTMLDivElement>(null);
   const bodyRef = useRef<HTMLDivElement>(null);
 
-  const handleHeaderTimelineMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleHeaderTimelineMouseMove = (
+    e: React.MouseEvent<HTMLDivElement>
+  ) => {
     if (!timelineRef.current || timeRange.duration === 0) return;
 
     const rect = timelineRef.current.getBoundingClientRect();
@@ -74,9 +79,11 @@ export const Waterfall: React.FC<WaterfallProps> = ({
       <div className="waterfall-header">
         <div
           className="waterfall-header-label"
-          style={{
-            '--label-width': `${labelWidth}px`,
-          } as React.CSSProperties}
+          style={
+            {
+              '--label-width': `${labelWidth}px`,
+            } as React.CSSProperties
+          }
         >
           <span className="waterfall-header-label-text">Name</span>
         </div>
@@ -118,9 +125,11 @@ export const Waterfall: React.FC<WaterfallProps> = ({
             <div
               key={item.id}
               className="waterfall-row"
-              style={{
-                '--label-width': `${labelWidth}px`,
-              } as React.CSSProperties}
+              style={
+                {
+                  '--label-width': `${labelWidth}px`,
+                } as React.CSSProperties
+              }
             >
               <WaterfallItem
                 item={item}
