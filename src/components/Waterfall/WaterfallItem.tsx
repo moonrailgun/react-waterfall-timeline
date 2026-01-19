@@ -6,7 +6,8 @@ export interface WaterfallItemProps {
   item: WaterfallItemType;
   timeRange: TimeRange;
   height: number;
-  onClick?: (item: WaterfallItemType) => void;
+  onItemClick?: (item: WaterfallItemType) => void;
+  onLabelClick?: (item: WaterfallItemType) => void;
   onHover?: (item: WaterfallItemType | null) => void;
   renderTooltip?: (
     item: WaterfallItemType,
@@ -170,7 +171,8 @@ export const WaterfallItem: React.FC<WaterfallItemProps> = ({
   item,
   timeRange,
   height,
-  onClick,
+  onItemClick,
+  onLabelClick,
   onHover,
   renderTooltip,
 }) => {
@@ -201,7 +203,11 @@ export const WaterfallItem: React.FC<WaterfallItemProps> = ({
   };
 
   const handleClick = () => {
-    onClick?.(item);
+    onItemClick?.(item);
+  };
+
+  const handleLabelClick = () => {
+    onLabelClick?.(item);
   };
 
   const barColor = item.color || '#cccccc';
@@ -213,6 +219,7 @@ export const WaterfallItem: React.FC<WaterfallItemProps> = ({
         onMouseEnter={hasStartTime ? undefined : handleMouseEnter}
         onMouseMove={hasStartTime ? undefined : handleMouseMove}
         onMouseLeave={hasStartTime ? undefined : handleMouseLeave}
+        onClick={handleLabelClick}
       >
         {item.name}
       </div>

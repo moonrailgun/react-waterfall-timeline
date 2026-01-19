@@ -36,6 +36,8 @@ export interface WaterfallProps {
   rulerHeight?: number;
   /** Called when an item is clicked */
   onItemClick?: OnItemClickCallback;
+  /** Called when an item's label is clicked */
+  onLabelClick?: OnItemClickCallback;
   /** Called when an item is hovered (null when hover ends) */
   onItemHover?: OnItemHoverCallback;
   /** Custom tooltip render function */

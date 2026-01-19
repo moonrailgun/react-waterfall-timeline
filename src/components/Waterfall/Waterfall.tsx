@@ -15,6 +15,7 @@ export const Waterfall: React.FC<WaterfallProps> = ({
   rowHeight = 32,
   rulerHeight = 40,
   onItemClick,
+  onLabelClick,
   onItemHover,
   renderTooltip,
   className = '',
@@ -112,36 +113,39 @@ export const Waterfall: React.FC<WaterfallProps> = ({
         </div>
       </div>
 
-      <div
-        className="waterfall-body"
-        ref={bodyRef}
-        onMouseMove={handleBodyMouseMove}
-        onMouseLeave={handleTimelineMouseLeave}
-      >
-        {items.length === 0 ? (
-          <div className="waterfall-empty">No items to display</div>
-        ) : (
-          items.map((item) => (
-            <div
-              key={item.id}
-              className="waterfall-row"
-              style={
-                {
-                  '--label-width': `${labelWidth}px`,
-                } as React.CSSProperties
-              }
-            >
-              <WaterfallItem
-                item={item}
-                timeRange={timeRange}
-                height={rowHeight}
-                onClick={onItemClick}
-                onHover={onItemHover}
-                renderTooltip={renderTooltip}
-              />
-            </div>
-          ))
-        )}
+      <div className="waterfall-body-wrapper">
+        <div
+          className="waterfall-body"
+          ref={bodyRef}
+          onMouseMove={handleBodyMouseMove}
+          onMouseLeave={handleTimelineMouseLeave}
+        >
+          {items.length === 0 ? (
+            <div className="waterfall-empty">No items to display</div>
+          ) : (
+            items.map((item) => (
+              <div
+                key={item.id}
+                className="waterfall-row"
+                style={
+                  {
+                    '--label-width': `${labelWidth}px`,
+                  } as React.CSSProperties
+                }
+              >
+                <WaterfallItem
+                  item={item}
+                  timeRange={timeRange}
+                  height={rowHeight}
+                  onItemClick={onItemClick}
+                  onLabelClick={onLabelClick}
+                  onHover={onItemHover}
+                  renderTooltip={renderTooltip}
+                />
+              </div>
+            ))
+          )}
+        </div>
 
         {cursorPosition && (
           <div

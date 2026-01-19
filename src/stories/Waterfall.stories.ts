@@ -9,6 +9,14 @@ const meta = {
   parameters: {
     layout: 'padded',
   },
+  decorators: [
+    (Story) =>
+      React.createElement(
+        'div',
+        { style: { height: '400px', overflow: 'hidden' } },
+        React.createElement(Story)
+      ),
+  ],
   tags: ['autodocs'],
   argTypes: {
     items: {
