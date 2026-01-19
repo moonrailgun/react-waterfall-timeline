@@ -216,6 +216,7 @@ export const WaterfallItem: React.FC<WaterfallItemProps> = ({
     <div className="waterfall-item" style={{ height: `${height}px` }}>
       <div
         className="waterfall-item-label"
+        style={{ lineHeight: `${height}px` }}
         onMouseEnter={hasStartTime ? undefined : handleMouseEnter}
         onMouseMove={hasStartTime ? undefined : handleMouseMove}
         onMouseLeave={hasStartTime ? undefined : handleMouseLeave}
