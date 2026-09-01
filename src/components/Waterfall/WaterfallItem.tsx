@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import type { WaterfallItem as WaterfallItemType, TimeRange } from './types';
 import { calculateBarPosition, formatTime } from './utils';
 
@@ -94,14 +95,19 @@ const SmartTooltip: React.FC<{
     }
   }, [position.x, position.y, children]);
 
-  return (
+  if (typeof document === 'undefined') {
+    return null;
+  }
+
+  return createPortal(
     <div
       ref={tooltipRef}
       className="waterfall-item-tooltip"
       style={computedStyle}
     >
       {children}
-    </div>
+    </div>,
+    document.body
   );
 };
 

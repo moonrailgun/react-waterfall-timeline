@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import React from 'react';
+import { expect, userEvent } from 'storybook/test';
 import { Waterfall } from '../components/Waterfall';
 import type { WaterfallItem } from '../components/Waterfall/types';
 
@@ -93,6 +94,44 @@ export const Basic: Story = {
     labelWidth: 200,
     rowHeight: 32,
     rulerHeight: 40,
+  },
+};
+
+export const TransformedAncestor: Story = {
+  args: Basic.args,
+  decorators: [
+    (Story) =>
+      React.createElement(
+        'div',
+        { style: { transform: 'translateZ(0)' } },
+        React.createElement(Story)
+      ),
+  ],
+  play: async ({ canvasElement }) => {
+    const bar = canvasElement.querySelector('.waterfall-item-bar');
+
+    if (!(bar instanceof HTMLElement)) {
+      throw new Error('Expected a waterfall item bar');
+    }
+
+    await userEvent.hover(bar);
+
+    const tooltip = canvasElement.ownerDocument.querySelector(
+      '.waterfall-item-tooltip'
+    );
+
+    const container = canvasElement.querySelector('.waterfall-container');
+    if (
+      !(tooltip instanceof HTMLElement) ||
+      !(container instanceof HTMLElement)
+    ) {
+      throw new Error('Expected the waterfall tooltip and container');
+    }
+
+    await expect(tooltip?.parentElement).toBe(canvasElement.ownerDocument.body);
+    await expect(getComputedStyle(tooltip).fontFamily).toBe(
+      getComputedStyle(container).fontFamily
+    );
   },
 };
 
