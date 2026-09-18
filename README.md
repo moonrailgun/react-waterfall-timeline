@@ -20,6 +20,8 @@ A waterfall timeline component similar to Chrome DevTools Network panel for visu
 - 🎯 **Intuitive Timeline Display**: Visual effects similar to Chrome DevTools Network panel
 - 📊 **Smart Time Scale**: Automatically generates reasonable time scale rulers based on data range
 - 📍 **Time Indicator Line**: Shows vertical indicator line and current time position on hover
+- 🚩 **Time Markers**: Persistent vertical lines with optional labels and colors
+- 🗂️ **Trace Groups**: Named sections sharing the same time axis
 - 🎨 **Customizable Styles**: Supports custom colors, sizes, and other properties
 - 🖱️ **Interactive Experience**: Supports click and hover events with detailed tooltip information
 - 🎯 **Smart Tooltip Positioning**: Tooltips intelligently measure themselves and adjust position based on actual DOM size to avoid viewport overflow
@@ -396,6 +398,51 @@ function App() {
 }
 ```
 
+### Grouped Traces and Time Markers
+
+```tsx
+<Waterfall
+  items={[
+    {
+      id: 'render',
+      name: 'Generate comic',
+      groupId: 'fast',
+      startTime: 0,
+      endTime: 38500,
+    },
+    {
+      id: 'memory',
+      name: 'Update memory',
+      groupId: 'slow',
+      startTime: 38500,
+      endTime: 61000,
+    },
+  ]}
+  groups={[
+    { id: 'fast', name: 'Fast system', color: '#b45309' },
+    { id: 'slow', name: 'Slow system', color: '#0f766e' },
+  ]}
+  markers={[
+    {
+      id: 'visible',
+      time: 38500,
+      label: 'Comic visible · 38.5s',
+      color: '#e11d48',
+    },
+    { id: 'saved', time: 61000, label: 'Memory saved · 61s', color: '#7c3aed' },
+  ]}
+/>
+```
+
+Markers use milliseconds and the same time origin as `startTime` / `endTime`.
+To mark a node's start or end, pass that item's `startTime` or `endTime` as `time`.
+Markers extend the time range when necessary and also work without items. Non-finite marker times are ignored.
+Labels stay visible while scrolling and each adds a 20px row above the ruler to avoid overlapping other labels, up to 4 rows; further labels reuse those rows and may overlap.
+
+Items with the same `groupId` appear together in `groups` order, preserving their order within each group.
+Unknown group IDs appear afterward, in first-seen order, using the ID as their heading. Ungrouped items appear last; empty groups are hidden.
+Both `markers` and `groups` are optional and can be used independently. Omitting `groupId` preserves the existing flat list.
+
 ## 📚 API Documentation
 
 ### `<Waterfall>` Props
@@ -403,6 +450,8 @@ function App() {
 | Property        | Type                                    | Default      | Description                               |
 | --------------- | --------------------------------------- | ------------ | ----------------------------------------- |
 | `items`         | `WaterfallItem[]`                       | **Required** | Array of timeline data to display         |
+| `markers`       | `WaterfallMarker[]`                     | `undefined`  | Persistent vertical time markers          |
+| `groups`        | `WaterfallGroup[]`                      | `undefined`  | Group headings in display order           |
 | `labelWidth`    | `number`                                | `200`        | Width of the left label column (pixels)   |
 | `rowHeight`     | `number`                                | `32`         | Height of each row (pixels)               |
 | `rulerHeight`   | `number`                                | `40`         | Height of the ruler (pixels)              |
@@ -429,6 +478,9 @@ interface WaterfallItem {
 
   /** Optional color for the timeline bar (default: #cccccc) */
   color?: string;
+
+  /** Optional group ID */
+  groupId?: string;
 }
 ```
 
@@ -437,6 +489,26 @@ interface WaterfallItem {
 - **Both startTime and endTime**: Shows a solid bar representing a completed task
 - **Only startTime (no endTime)**: Shows a gradient fade effect (left to right) extending to the end, representing an in-progress task
 - **No startTime**: Only shows the name label on the left, useful for items that haven't started yet
+
+### `WaterfallMarker` and `WaterfallGroup` Interfaces
+
+```typescript
+interface WaterfallMarker {
+  id: string;
+  /** Milliseconds, using the same origin as item times */
+  time: number;
+  label?: string;
+  /** Line and label color (default: #e11d48) */
+  color?: string;
+}
+
+interface WaterfallGroup {
+  id: string;
+  name: string;
+  /** Heading color */
+  color?: string;
+}
+```
 
 ### Type Definitions
 

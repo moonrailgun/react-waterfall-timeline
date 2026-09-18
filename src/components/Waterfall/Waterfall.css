@@ -12,11 +12,15 @@
   border: 1px solid #e0e0e0;
   border-radius: 4px;
   overflow: hidden;
+  isolation: isolate;
 }
 
 /* Header */
 .waterfall-header {
   display: flex;
+  flex-shrink: 0;
+  overflow: hidden;
+  scrollbar-gutter: stable;
   border-bottom: 2px solid #d0d0d0;
   background-color: #f5f5f5;
   position: relative;
@@ -126,7 +130,60 @@
 
 .waterfall-body {
   overflow-y: auto;
+  scrollbar-gutter: stable;
   height: 100%;
+}
+
+.waterfall-rows {
+  position: relative;
+  min-height: 100%;
+}
+
+.waterfall-group-header {
+  position: relative;
+  z-index: 21; /* above body marker lines */
+  padding: 8px 12px;
+  background: #f5f5f5;
+  border-bottom: 1px solid #e0e0e0;
+  font-weight: 600;
+  color: #333;
+}
+
+.waterfall-body-markers {
+  position: absolute;
+  inset: 0 0 0 var(--label-width, 200px);
+  pointer-events: none;
+}
+
+.waterfall-markers {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 20;
+}
+
+.waterfall-marker {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-left: 2px dashed currentColor;
+  transform: translateX(-1px);
+}
+
+.waterfall-marker-label {
+  position: absolute;
+  box-sizing: border-box;
+  padding: 2px 4px;
+  border-radius: 3px;
+  background: #fff;
+  font-size: 10px;
+  line-height: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: auto;
+  z-index: 1; /* above later markers' lines */
 }
 
 .waterfall-cursor-line-body {

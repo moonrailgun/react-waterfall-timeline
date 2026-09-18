@@ -1,21 +1,34 @@
-import type { TimeRange, RulerTick, WaterfallItem } from './types';
+import type {
+  TimeRange,
+  RulerTick,
+  WaterfallItem,
+  WaterfallMarker,
+} from './types';
 
 /**
- * Calculate the time range from waterfall items
+ * Calculate the time range from waterfall items and markers
  * For items without endTime, we extend the range to give them visual space
  */
-export function calculateTimeRange(items: WaterfallItem[]): TimeRange {
+export function calculateTimeRange(
+  items: WaterfallItem[],
+  markers: WaterfallMarker[] = []
+): TimeRange {
   // Filter items that have startTime
   const validItems = items.filter((item) => item.startTime !== undefined);
 
-  if (validItems.length === 0) {
+  const markerTimes = markers.map((marker) => marker.time);
+
+  if (validItems.length === 0 && markerTimes.length === 0) {
     return { min: 0, max: 0, duration: 0 };
   }
 
-  const min = Math.min(...validItems.map((item) => item.startTime!));
+  const min = Math.min(
+    ...validItems.map((item) => item.startTime!),
+    ...markerTimes
+  );
 
   // Collect all time points
-  const timePoints: number[] = [];
+  const timePoints: number[] = [...markerTimes];
   let hasInProgressItems = false;
 
   validItems.forEach((item) => {
@@ -39,6 +52,15 @@ export function calculateTimeRange(items: WaterfallItem[]): TimeRange {
   const duration = max - min;
 
   return { min, max, duration };
+}
+
+/**
+ * Convert a time to its percentage position within the range
+ */
+export function timeToPercent(time: number, timeRange: TimeRange): number {
+  return timeRange.duration === 0
+    ? 0
+    : ((time - timeRange.min) / timeRange.duration) * 100;
 }
 
 /**
@@ -121,10 +143,9 @@ export function generateRulerTicks(timeRange: TimeRange): RulerTick[] {
   const firstTick = Math.ceil(min / interval) * interval;
 
   for (let time = firstTick; time <= max; time += interval) {
-    const position = ((time - min) / duration) * 100;
     ticks.push({
       time,
-      position,
+      position: timeToPercent(time, timeRange),
       label: formatTime(time - min),
     });
   }
@@ -150,17 +171,17 @@ export function calculateBarPosition(
   endTime: number | undefined,
   timeRange: TimeRange
 ): { left: number; width: number } {
-  const { min, max, duration } = timeRange;
+  const { max, duration } = timeRange;
 
   if (duration === 0) {
     return { left: 0, width: 100 };
   }
 
-  const left = ((startTime - min) / duration) * 100;
+  const left = timeToPercent(startTime, timeRange);
 
   // If no endTime, extend to the end of the timeline
   const effectiveEndTime = endTime !== undefined ? endTime : max;
-  const right = ((effectiveEndTime - min) / duration) * 100;
+  const right = timeToPercent(effectiveEndTime, timeRange);
   let width = right - left;
 
   // Ensure minimum width of at least 30px equivalent (approximately 1% for typical widths)

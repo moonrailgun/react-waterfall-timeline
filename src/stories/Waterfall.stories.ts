@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import React from 'react';
-import { expect, userEvent } from 'storybook/test';
+import { expect, fn, userEvent, within } from 'storybook/test';
 import { Waterfall } from '../components/Waterfall';
 import type { WaterfallItem } from '../components/Waterfall/types';
 
@@ -700,5 +700,194 @@ export const MixedStates: Story = {
           'A realistic scenario showing: items without startTime (not started), items with both times (completed), and items with only startTime (in progress).',
       },
     },
+  },
+};
+
+export const GroupedTracesWithMarkers: Story = {
+  args: {
+    items: [
+      {
+        id: 'memory',
+        name: 'Update memory',
+        groupId: 'slow',
+        startTime: 38500,
+        endTime: 61000,
+        color: '#14b8a6',
+      },
+      {
+        id: 'writer',
+        name: 'Writer agent',
+        groupId: 'fast',
+        startTime: 0,
+        endTime: 14500,
+        color: '#f59e0b',
+      },
+      {
+        id: 'panel-1',
+        name: 'Generate panel 1',
+        groupId: 'fast',
+        startTime: 14500,
+        endTime: 31000,
+        color: '#f59e0b',
+      },
+      {
+        id: 'panel-2',
+        name: 'Generate panel 2',
+        groupId: 'fast',
+        startTime: 15000,
+        endTime: 38500,
+        color: '#f59e0b',
+      },
+      {
+        id: 'turn-8',
+        name: 'Turn 8',
+        groupId: 'next',
+        startTime: 44000,
+        endTime: 80000,
+        color: '#a78bfa',
+      },
+      { id: 'other', name: 'Ungrouped trace', startTime: 0, endTime: 5000 },
+      {
+        id: 'extra',
+        name: 'Extra trace',
+        groupId: 'background',
+        startTime: 1000,
+        endTime: 4000,
+      },
+    ],
+    groups: [
+      { id: 'fast', name: 'Fast system', color: '#b45309' },
+      { id: 'slow', name: 'Slow system', color: '#0f766e' },
+      { id: 'next', name: 'Next turn', color: '#7c3aed' },
+      { id: 'empty', name: 'Empty group' },
+    ],
+    markers: [
+      {
+        id: 'visible',
+        time: 38500,
+        label: 'Comic visible · 38.5s',
+        color: '#e11d48',
+      },
+      {
+        id: 'snapshot',
+        time: 44000,
+        label: 'T8 snapshot · 44s',
+        color: '#a16207',
+      },
+      {
+        id: 'saved',
+        time: 61000,
+        label: 'Memory rev 43 · 61s',
+        color: '#7c3aed',
+      },
+    ],
+    onItemClick: fn(),
+  },
+  decorators: [
+    (Story) =>
+      React.createElement(
+        'div',
+        { style: { height: 340 } },
+        React.createElement(Story)
+      ),
+  ],
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+    await expect(
+      canvas
+        .getAllByRole('group')
+        .map((group) => group.getAttribute('aria-label'))
+    ).toEqual(['Fast system', 'Slow system', 'Next turn', 'background']);
+    await expect(
+      within(canvas.getByRole('group', { name: 'Fast system' })).getByText(
+        'Generate panel 2'
+      )
+    ).toBeVisible();
+    await expect(canvas.getByText('Ungrouped trace')).toBeInTheDocument();
+    await expect(canvas.queryByText('Empty group')).not.toBeInTheDocument();
+    const labels = canvasElement.querySelectorAll('.waterfall-marker-label');
+    for (let index = 1; index < labels.length; index++) {
+      await expect(
+        labels[index].getBoundingClientRect().top
+      ).toBeGreaterThanOrEqual(
+        labels[index - 1].getBoundingClientRect().bottom
+      );
+    }
+
+    const marker =
+      canvasElement.querySelector<HTMLElement>('.waterfall-marker');
+    const bodyMarker = canvasElement.querySelector<HTMLElement>(
+      '.waterfall-body .waterfall-marker'
+    );
+    const bar = canvas
+      .getByText('Generate panel 2')
+      .nextElementSibling?.querySelector<HTMLElement>('.waterfall-item-bar');
+    const body = canvasElement.querySelector<HTMLElement>('.waterfall-body');
+    if (!marker || !bodyMarker || !bar || !body)
+      throw new Error('Expected markers and trace bar');
+
+    await expect(
+      Math.abs(
+        marker.getBoundingClientRect().left +
+          marker.getBoundingClientRect().width / 2 -
+          bar.getBoundingClientRect().right
+      )
+    ).toBeLessThan(1);
+    await expect(
+      Math.abs(
+        bodyMarker.getBoundingClientRect().left -
+          marker.getBoundingClientRect().left
+      )
+    ).toBeLessThan(1);
+    await userEvent.click(bar);
+    await expect(args.onItemClick).toHaveBeenCalledWith(args.items[3]);
+    await userEvent.unhover(bar);
+    await expect(canvas.getByText('Comic visible · 38.5s')).toBeVisible();
+
+    body.scrollTop = body.scrollHeight;
+    try {
+      await expect(body.scrollTop).toBeGreaterThan(0);
+      await expect(canvas.getByText('Comic visible · 38.5s')).toBeVisible();
+      await expect(
+        bodyMarker.getBoundingClientRect().bottom
+      ).toBeGreaterThanOrEqual(body.getBoundingClientRect().bottom - 1);
+    } finally {
+      body.scrollTop = 0;
+    }
+  },
+};
+
+export const MarkersExtendTimeRange: Story = {
+  args: {
+    items: [{ id: 'trace', name: 'Trace', startTime: 1500, endTime: 2500 }],
+    markers: [
+      { id: 'before', time: 1000, label: 'Before traces' },
+      { id: 'after', time: 3000, label: 'After traces' },
+      { id: 'invalid', time: Number.NaN, label: 'Invalid marker' },
+    ],
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByText('Before traces')).toBeVisible();
+    await expect(canvas.getByText('After traces')).toBeVisible();
+    await expect(canvas.queryByText('Invalid marker')).not.toBeInTheDocument();
+    const bar = canvasElement.querySelector<HTMLElement>('.waterfall-item-bar');
+    await expect(bar?.style.left).toBe('25%');
+    await expect(bar?.style.width).toBe('50%');
+  },
+};
+
+export const MarkerWithoutTraces: Story = {
+  args: {
+    items: [],
+    markers: [{ id: 'event', time: 1000, label: 'Standalone event' }],
+  },
+  play: async ({ canvasElement }) => {
+    await expect(
+      within(canvasElement).getByText('Standalone event')
+    ).toBeVisible();
+    await expect(
+      canvasElement.querySelector<HTMLElement>('.waterfall-marker')?.style.left
+    ).toBe('0%');
   },
 };

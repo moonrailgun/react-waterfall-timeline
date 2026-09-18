@@ -12,6 +12,26 @@ export interface WaterfallItem {
   endTime?: number;
   /** Optional color for the timeline bar */
   color?: string;
+  /** Optional group ID; items in the same group are displayed together */
+  groupId?: string;
+}
+
+export interface WaterfallGroup {
+  id: string;
+  /** Group heading */
+  name: string;
+  /** Optional heading color */
+  color?: string;
+}
+
+export interface WaterfallMarker {
+  id: string;
+  /** Time in milliseconds, using the same origin as item startTime/endTime */
+  time: number;
+  /** Optional label displayed above the timeline */
+  label?: string;
+  /** Optional line and label color */
+  color?: string;
 }
 
 // Callback function types
@@ -28,6 +48,10 @@ export type RenderTooltipCallback = (
 export interface WaterfallProps {
   /** Array of waterfall items to display */
   items: WaterfallItem[];
+  /** Persistent vertical time markers */
+  markers?: WaterfallMarker[];
+  /** Group headings in display order; unknown group IDs use their ID as a name */
+  groups?: WaterfallGroup[];
   /** Width of the left label column in pixels */
   labelWidth?: number;
   /** Height of each row in pixels */
