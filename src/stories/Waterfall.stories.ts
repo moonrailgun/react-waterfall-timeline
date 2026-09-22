@@ -1,8 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import React from 'react';
+import React, { useState } from 'react';
 import { expect, fn, userEvent, within } from 'storybook/test';
 import { Waterfall } from '../components/Waterfall';
-import type { WaterfallItem } from '../components/Waterfall/types';
+import type {
+  WaterfallItem,
+  WaterfallProps,
+} from '../components/Waterfall/types';
 
 const meta = {
   title: 'Components/Waterfall',
@@ -22,6 +25,15 @@ const meta = {
   argTypes: {
     items: {
       description: 'Array of waterfall items to display',
+    },
+    mini: {
+      control: 'boolean',
+      description: 'Show only compact 6px timeline bars',
+    },
+    interactive: {
+      control: 'boolean',
+      description:
+        'Set false to disable tooltips, the hover cursor and item callbacks',
     },
     labelWidth: {
       control: { type: 'number', min: 100, max: 400, step: 10 },
@@ -94,6 +106,245 @@ export const Basic: Story = {
     labelWidth: 200,
     rowHeight: 32,
     rulerHeight: 40,
+  },
+};
+
+export const Mini: Story = {
+  args: {
+    mini: true,
+    items: [
+      { id: 'pending', name: 'Not started', groupId: 'tasks' },
+      {
+        id: 'active',
+        name: 'In progress',
+        groupId: 'background',
+        startTime: 200,
+        color: '#50c878',
+      },
+      {
+        id: 'done',
+        name: 'Completed',
+        groupId: 'tasks',
+        startTime: 100,
+        endTime: 300,
+        color: '#4a90e2',
+      },
+    ],
+    markers: [{ id: 'end', time: 500, label: 'Checkpoint' }],
+    labelWidth: 200,
+    rowHeight: 32,
+    rulerHeight: 40,
+    onItemClick: fn(),
+    onItemHover: fn(),
+    renderTooltip: fn(() => 'Custom tooltip'),
+  },
+  decorators: [
+    (Story) =>
+      React.createElement(
+        'div',
+        { style: { width: 160, height: 12 } },
+        React.createElement(Story)
+      ),
+  ],
+  play: async ({ canvasElement, args }) => {
+    await expect(
+      canvasElement.querySelector('.waterfall-header')
+    ).not.toBeInTheDocument();
+    await expect(
+      canvasElement.querySelector('.waterfall-item-label')
+    ).not.toBeInTheDocument();
+    await expect(
+      canvasElement.querySelector('.waterfall-group-header')
+    ).not.toBeInTheDocument();
+    await expect(
+      canvasElement.querySelector('.waterfall-marker')
+    ).not.toBeInTheDocument();
+    await expect(canvasElement.querySelectorAll('.waterfall-row')).toHaveLength(
+      2
+    );
+
+    const bars = canvasElement.querySelectorAll<HTMLElement>(
+      '.waterfall-item-bar'
+    );
+    const body = canvasElement.querySelector<HTMLElement>('.waterfall-body')!;
+    await expect(bars).toHaveLength(2);
+    await expect(
+      Array.from(bars, (bar) => bar.getAttribute('aria-label'))
+    ).toEqual(['Completed', 'In progress']);
+    await expect(body.scrollHeight).toBe(body.clientHeight);
+    await expect(body.scrollWidth).toBe(body.clientWidth);
+    await expect(bars[0].style.left).toBe('0%');
+    await expect(parseFloat(bars[0].style.width)).toBeCloseTo(41.6667, 3);
+    await expect(bars[0].getBoundingClientRect().left).toBe(
+      body.getBoundingClientRect().left
+    );
+    for (const bar of bars) {
+      await expect(bar.getBoundingClientRect().height).toBe(6);
+      await expect(getComputedStyle(bar).borderRadius).toBe('3px');
+    }
+    await expect(
+      bars[1].getBoundingClientRect().top -
+        bars[0].getBoundingClientRect().bottom
+    ).toBe(0);
+    await userEvent.hover(bars[0]);
+    await expect(args.onItemHover).toHaveBeenLastCalledWith(args.items[2]);
+    await expect(bars[0].getBoundingClientRect().height).toBe(6);
+    await expect(
+      canvasElement.querySelector('[class*="waterfall-cursor"]')
+    ).not.toBeInTheDocument();
+    const tooltip = canvasElement.ownerDocument.querySelector(
+      '.waterfall-item-tooltip'
+    );
+    await expect(tooltip).toBeVisible();
+    await expect(tooltip).toHaveTextContent('Custom tooltip');
+    await expect(args.renderTooltip).toHaveBeenCalledWith(
+      args.items[2],
+      expect.anything()
+    );
+    await userEvent.click(bars[0]);
+    await expect(args.onItemClick).toHaveBeenCalledWith(args.items[2]);
+    await userEvent.unhover(bars[0]);
+    await expect(args.onItemHover).toHaveBeenLastCalledWith(null);
+    await expect(
+      canvasElement.ownerDocument.querySelector('.waterfall-item-tooltip')
+    ).not.toBeInTheDocument();
+  },
+};
+
+function ExpandableMini(args: WaterfallProps) {
+  const [expanded, setExpanded] = useState(false);
+  return React.createElement(
+    React.Fragment,
+    null,
+    React.createElement(
+      'button',
+      {
+        type: 'button',
+        'aria-label': 'Toggle full timeline',
+        'aria-expanded': expanded,
+        onClick: () => setExpanded(!expanded),
+        style: {
+          display: 'block',
+          width: 180,
+          height: 34,
+          padding: 2,
+          border: 0,
+          background: 'transparent',
+          cursor: 'pointer',
+        },
+      },
+      React.createElement(Waterfall, {
+        ...args,
+        mini: true,
+        interactive: false,
+      })
+    ),
+    expanded &&
+      React.createElement(
+        'div',
+        { style: { height: 300, marginTop: 12 } },
+        React.createElement(Waterfall, { ...args, mini: false })
+      )
+  );
+}
+
+export const MiniExpandable: Story = {
+  args: Basic.args,
+  render: (args) => React.createElement(ExpandableMini, args),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const trigger = canvas.getByRole('button', {
+      name: 'Toggle full timeline',
+    });
+    const bar = trigger.querySelector<HTMLElement>('.waterfall-item-bar')!;
+    const rect = bar.getBoundingClientRect();
+    await expect(rect.height).toBe(6);
+    // interactive={false}: the pointer never targets a bar, so the button gets every click.
+    await expect(
+      canvasElement.ownerDocument.elementFromPoint(
+        rect.left + rect.width / 2,
+        rect.top + rect.height / 2
+      )
+    ).toHaveClass('waterfall-body');
+    await userEvent.click(trigger);
+    await expect(trigger).toHaveAttribute('aria-expanded', 'true');
+    await expect(
+      canvasElement.ownerDocument.querySelector('.waterfall-item-tooltip')
+    ).not.toBeInTheDocument();
+    await expect(canvas.getByText('Name')).toBeVisible();
+    await expect(canvas.getByText('index.html')).toBeVisible();
+    const fullBar = canvasElement.querySelector<HTMLElement>(
+      '.waterfall-container:not(.waterfall-mini) .waterfall-item-bar'
+    )!;
+    await expect(fullBar.style.left).toBe(bar.style.left);
+    await expect(fullBar.style.width).toBe(bar.style.width);
+    await userEvent.hover(fullBar);
+    await expect(
+      canvasElement.ownerDocument.querySelector('.waterfall-item-tooltip')
+    ).toBeVisible();
+    await userEvent.unhover(fullBar);
+    trigger.focus();
+    await userEvent.keyboard('{Enter}');
+    await expect(canvas.queryByText('Name')).not.toBeInTheDocument();
+    await userEvent.keyboard(' ');
+    await expect(canvas.getByText('Name')).toBeVisible();
+  },
+};
+
+function ToggleMini(args: WaterfallProps) {
+  const [mini, setMini] = useState(false);
+  return React.createElement(
+    React.Fragment,
+    null,
+    React.createElement(
+      'button',
+      {
+        type: 'button',
+        'aria-pressed': mini,
+        onClick: () => setMini(!mini),
+      },
+      'Mini mode'
+    ),
+    React.createElement(
+      'div',
+      { style: { height: mini ? 30 : 300, marginTop: 12 } },
+      React.createElement(Waterfall, { ...args, mini })
+    )
+  );
+}
+
+export const MiniToggle: Story = {
+  args: Basic.args,
+  render: (args) => React.createElement(ToggleMini, args),
+  play: async ({ canvasElement }) => {
+    const trigger = within(canvasElement).getByRole('button', {
+      name: 'Mini mode',
+    });
+    const bar = canvasElement.querySelector<HTMLElement>(
+      '.waterfall-item-bar'
+    )!;
+    const rect = bar.getBoundingClientRect();
+    trigger.focus();
+    await userEvent.pointer({
+      target: bar,
+      coords: {
+        clientX: rect.left + rect.width / 2,
+        clientY: rect.top + rect.height / 2,
+      },
+    });
+    await expect(
+      canvasElement.querySelector('.waterfall-cursor-line-body')
+    ).toBeInTheDocument();
+
+    // Keyboard switching keeps the pointer inside until mini mode is active.
+    await userEvent.keyboard(' ');
+    await expect(trigger).toHaveAttribute('aria-pressed', 'true');
+    await userEvent.unhover(bar);
+    await userEvent.keyboard(' ');
+    await expect(trigger).toHaveAttribute('aria-pressed', 'false');
+    await expect(
+      canvasElement.querySelector('[class*="waterfall-cursor"]')
+    ).not.toBeInTheDocument();
   },
 };
 

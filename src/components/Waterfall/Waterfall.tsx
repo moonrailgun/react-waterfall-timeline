@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useRef } from 'react';
+import React, { useMemo, useState, useRef, useEffect } from 'react';
 import type {
   WaterfallProps,
   WaterfallGroup,
@@ -20,6 +20,8 @@ import './Waterfall.css';
  */
 export const Waterfall: React.FC<WaterfallProps> = ({
   items,
+  mini = false,
+  interactive = true,
   markers,
   groups,
   labelWidth = 200,
@@ -64,6 +66,7 @@ export const Waterfall: React.FC<WaterfallProps> = ({
         };
         grouped.set(groupId, section);
       }
+      if (mini && item.startTime === undefined) continue;
       section.items.push(item);
     }
     // Ungrouped items follow the named groups, preserving their input order.
@@ -71,13 +74,18 @@ export const Waterfall: React.FC<WaterfallProps> = ({
     grouped.delete(undefined);
     if (ungrouped) grouped.set(undefined, ungrouped);
     return [...grouped.values()].filter((section) => section.items.length > 0);
-  }, [items, groups]);
+  }, [items, groups, mini]);
 
   const [cursorPosition, setCursorPosition] = useState<{
     x: number;
     time: number;
   } | null>(null);
   const timelineRef = useRef<HTMLDivElement>(null);
+
+  const showCursor = !mini && interactive;
+  useEffect(() => {
+    if (!showCursor) setCursorPosition(null);
+  }, [showCursor]);
 
   const handleTimelineMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!timelineRef.current || timeRange.duration === 0) return;
@@ -102,96 +110,104 @@ export const Waterfall: React.FC<WaterfallProps> = ({
 
   return (
     <div
-      className={`waterfall-container ${className}`}
+      className={`waterfall-container ${mini ? 'waterfall-mini' : ''} ${interactive ? '' : 'waterfall-static'} ${className}`}
       style={{ '--label-width': `${labelWidth}px` } as React.CSSProperties}
     >
-      <div className="waterfall-header">
-        <div className="waterfall-header-label">
-          <span className="waterfall-header-label-text">Name</span>
-        </div>
-        <div
-          className="waterfall-header-timeline"
-          style={{ paddingTop: markerLabelHeight }}
-          ref={timelineRef}
-          onMouseMove={handleTimelineMouseMove}
-          onMouseLeave={handleTimelineMouseLeave}
-        >
-          <WaterfallRuler timeRange={timeRange} height={rulerHeight} />
-          <WaterfallMarkers
-            markers={validMarkers}
-            timeRange={timeRange}
-            showLabels
-          />
+      {!mini && (
+        <div className="waterfall-header">
+          <div className="waterfall-header-label">
+            <span className="waterfall-header-label-text">Name</span>
+          </div>
+          <div
+            className="waterfall-header-timeline"
+            style={{ paddingTop: markerLabelHeight }}
+            ref={timelineRef}
+            onMouseMove={showCursor ? handleTimelineMouseMove : undefined}
+            onMouseLeave={showCursor ? handleTimelineMouseLeave : undefined}
+          >
+            <WaterfallRuler timeRange={timeRange} height={rulerHeight} />
+            <WaterfallMarkers
+              markers={validMarkers}
+              timeRange={timeRange}
+              showLabels
+            />
 
-          {cursorPosition && (
-            <>
-              <div
-                className="waterfall-cursor-line"
-                style={{ left: `${cursorPosition.x}px` }}
-              />
-              <div
-                className="waterfall-cursor-time"
-                style={{
-                  left: `${cursorPosition.x}px`,
-                  top: markerLabelHeight + 2,
-                }}
-              >
-                {formatTime(cursorPosition.time - timeRange.min)}
-              </div>
-            </>
-          )}
+            {cursorPosition && (
+              <>
+                <div
+                  className="waterfall-cursor-line"
+                  style={{ left: `${cursorPosition.x}px` }}
+                />
+                <div
+                  className="waterfall-cursor-time"
+                  style={{
+                    left: `${cursorPosition.x}px`,
+                    top: markerLabelHeight + 2,
+                  }}
+                >
+                  {formatTime(cursorPosition.time - timeRange.min)}
+                </div>
+              </>
+            )}
+          </div>
         </div>
-      </div>
+      )}
 
       <div className="waterfall-body-wrapper">
         <div
           className="waterfall-body"
-          onMouseMove={handleTimelineMouseMove}
-          onMouseLeave={handleTimelineMouseLeave}
+          onMouseMove={showCursor ? handleTimelineMouseMove : undefined}
+          onMouseLeave={showCursor ? handleTimelineMouseLeave : undefined}
         >
           <div className="waterfall-rows">
-            {items.length === 0 ? (
-              <div className="waterfall-empty">No items to display</div>
-            ) : (
-              sections.map((section) => (
-                <div
-                  key={
-                    section.group ? `group:${section.group.id}` : 'ungrouped'
-                  }
-                  role={section.group ? 'group' : undefined}
-                  aria-label={section.group?.name}
-                >
-                  {section.group && (
-                    <div
-                      className="waterfall-group-header"
-                      style={{ color: section.group.color }}
-                    >
-                      {section.group.name}
-                    </div>
-                  )}
-                  {section.items.map((item) => (
-                    <div key={item.id} className="waterfall-row">
-                      <WaterfallItem
-                        item={item}
-                        timeRange={timeRange}
-                        height={rowHeight}
-                        onItemClick={onItemClick}
-                        onLabelClick={onLabelClick}
-                        onHover={onItemHover}
-                        renderTooltip={renderTooltip}
-                      />
-                    </div>
-                  ))}
-                </div>
-              ))
+            {items.length === 0
+              ? !mini && (
+                  <div className="waterfall-empty">No items to display</div>
+                )
+              : sections.map((section) => (
+                  <div
+                    key={
+                      section.group ? `group:${section.group.id}` : 'ungrouped'
+                    }
+                    role={section.group ? 'group' : undefined}
+                    aria-label={section.group?.name}
+                  >
+                    {!mini && section.group && (
+                      <div
+                        className="waterfall-group-header"
+                        style={{ color: section.group.color }}
+                      >
+                        {section.group.name}
+                      </div>
+                    )}
+                    {section.items.map((item) => (
+                      <div key={item.id} className="waterfall-row">
+                        <WaterfallItem
+                          item={item}
+                          mini={mini}
+                          timeRange={timeRange}
+                          height={mini ? 6 : rowHeight}
+                          onItemClick={onItemClick}
+                          onLabelClick={onLabelClick}
+                          onHover={onItemHover}
+                          renderTooltip={renderTooltip}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                ))}
+            {!mini && (
+              <div className="waterfall-body-markers">
+                <WaterfallMarkers
+                  markers={validMarkers}
+                  timeRange={timeRange}
+                />
+              </div>
             )}
-            <div className="waterfall-body-markers">
-              <WaterfallMarkers markers={validMarkers} timeRange={timeRange} />
-            </div>
           </div>
         </div>
 
-        {cursorPosition && (
+        {showCursor && cursorPosition && (
           <div
             className="waterfall-cursor-line-body"
             style={{ left: `${labelWidth + cursorPosition.x}px` }}

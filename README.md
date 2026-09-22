@@ -22,6 +22,7 @@ A waterfall timeline component similar to Chrome DevTools Network panel for visu
 - 📍 **Time Indicator Line**: Shows vertical indicator line and current time position on hover
 - 🚩 **Time Markers**: Persistent vertical lines with optional labels and colors
 - 🗂️ **Trace Groups**: Named sections sharing the same time axis
+- 🤏 **Mini Mode**: Compact 6px bars for small spaces, with externally controlled expansion
 - 🎨 **Customizable Styles**: Supports custom colors, sizes, and other properties
 - 🖱️ **Interactive Experience**: Supports click and hover events with detailed tooltip information
 - 🎯 **Smart Tooltip Positioning**: Tooltips intelligently measure themselves and adjust position based on actual DOM size to avoid viewport overflow
@@ -443,22 +444,62 @@ Items with the same `groupId` appear together in `groups` order, preserving thei
 Unknown group IDs appear afterward, in first-seen order, using the ID as their heading. Ungrouped items appear last; empty groups are hidden.
 Both `markers` and `groups` are optional and can be used independently. Omitting `groupId` preserves the existing flat list.
 
+### Mini Mode and External Expansion
+
+Set `mini` to render 6px-high rounded bars in 6px rows with no gap between bars.
+Mini mode hides labels, group headings, the ruler, persistent markers, and the hover cursor, and removes table borders and backgrounds. Hovering a bar still shows its tooltip.
+Items without `startTime` are omitted; an empty timeline stays blank. Colors, in-progress fades, group order, and the time range (including markers) stay consistent with the full timeline.
+`labelWidth`, `rowHeight`, and `rulerHeight` apply only to full mode.
+
+`onItemClick` and `onItemHover` still work. Pass `interactive={false}` to turn off tooltips, the hover cursor, and item callbacks in either mode, for example when the mini timeline is only a preview inside a button. Clicks bubble normally, so an external button can open the full timeline, a dialog, or a drawer, including from empty space. Expansion state and presentation stay in your application:
+
+```tsx
+import { useState } from 'react';
+import { Waterfall, type WaterfallProps } from 'react-waterfall-timeline';
+import 'react-waterfall-timeline/style.css';
+
+function ExpandableTimeline(props: WaterfallProps) {
+  const [expanded, setExpanded] = useState(false);
+
+  return (
+    <>
+      <button
+        type="button"
+        aria-label="Toggle full timeline"
+        aria-expanded={expanded}
+        onClick={() => setExpanded(!expanded)}
+        style={{ width: 180, height: 38, padding: 4 }}
+      >
+        <Waterfall {...props} mini interactive={false} />
+      </button>
+      {expanded && (
+        <div style={{ height: 300 }}>
+          <Waterfall {...props} mini={false} />
+        </div>
+      )}
+    </>
+  );
+}
+```
+
 ## 📚 API Documentation
 
 ### `<Waterfall>` Props
 
-| Property        | Type                                    | Default      | Description                               |
-| --------------- | --------------------------------------- | ------------ | ----------------------------------------- |
-| `items`         | `WaterfallItem[]`                       | **Required** | Array of timeline data to display         |
-| `markers`       | `WaterfallMarker[]`                     | `undefined`  | Persistent vertical time markers          |
-| `groups`        | `WaterfallGroup[]`                      | `undefined`  | Group headings in display order           |
-| `labelWidth`    | `number`                                | `200`        | Width of the left label column (pixels)   |
-| `rowHeight`     | `number`                                | `32`         | Height of each row (pixels)               |
-| `rulerHeight`   | `number`                                | `40`         | Height of the ruler (pixels)              |
-| `onItemClick`   | `(item: WaterfallItem) => void`         | `undefined`  | Callback function when an item is clicked |
-| `onItemHover`   | `(item: WaterfallItem \| null) => void` | `undefined`  | Callback function when an item is hovered |
-| `renderTooltip` | `RenderTooltipCallback`                 | `undefined`  | Custom tooltip render function            |
-| `className`     | `string`                                | `''`         | Custom CSS class name                     |
+| Property        | Type                                    | Default      | Description                                                                |
+| --------------- | --------------------------------------- | ------------ | -------------------------------------------------------------------------- |
+| `items`         | `WaterfallItem[]`                       | **Required** | Array of timeline data to display                                          |
+| `mini`          | `boolean`                               | `false`      | Compact 6px bars with no row gap; hides labels, ruler, markers, and cursor |
+| `interactive`   | `boolean`                               | `true`       | Set `false` to disable tooltips, the hover cursor, and item callbacks      |
+| `markers`       | `WaterfallMarker[]`                     | `undefined`  | Persistent vertical time markers                                           |
+| `groups`        | `WaterfallGroup[]`                      | `undefined`  | Group headings in display order                                            |
+| `labelWidth`    | `number`                                | `200`        | Width of the left label column (pixels)                                    |
+| `rowHeight`     | `number`                                | `32`         | Height of each row (pixels)                                                |
+| `rulerHeight`   | `number`                                | `40`         | Height of the ruler (pixels)                                               |
+| `onItemClick`   | `(item: WaterfallItem) => void`         | `undefined`  | Callback function when an item is clicked                                  |
+| `onItemHover`   | `(item: WaterfallItem \| null) => void` | `undefined`  | Callback function when an item is hovered                                  |
+| `renderTooltip` | `RenderTooltipCallback`                 | `undefined`  | Custom tooltip render function                                             |
+| `className`     | `string`                                | `''`         | Custom CSS class name                                                      |
 
 ### `WaterfallItem` Interface
 

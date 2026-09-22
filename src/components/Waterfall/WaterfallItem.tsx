@@ -7,6 +7,7 @@ export interface WaterfallItemProps {
   item: WaterfallItemType;
   timeRange: TimeRange;
   height: number;
+  mini?: boolean;
   onItemClick?: (item: WaterfallItemType) => void;
   onLabelClick?: (item: WaterfallItemType) => void;
   onHover?: (item: WaterfallItemType | null) => void;
@@ -177,6 +178,7 @@ export const WaterfallItem: React.FC<WaterfallItemProps> = ({
   item,
   timeRange,
   height,
+  mini = false,
   onItemClick,
   onLabelClick,
   onHover,
@@ -220,20 +222,24 @@ export const WaterfallItem: React.FC<WaterfallItemProps> = ({
 
   return (
     <div className="waterfall-item" style={{ height: `${height}px` }}>
-      <div
-        className="waterfall-item-label"
-        style={{ lineHeight: `${height}px` }}
-        onMouseEnter={hasStartTime ? undefined : handleMouseEnter}
-        onMouseMove={hasStartTime ? undefined : handleMouseMove}
-        onMouseLeave={hasStartTime ? undefined : handleMouseLeave}
-        onClick={handleLabelClick}
-      >
-        {item.name}
-      </div>
+      {!mini && (
+        <div
+          className="waterfall-item-label"
+          style={{ lineHeight: `${height}px` }}
+          onMouseEnter={hasStartTime ? undefined : handleMouseEnter}
+          onMouseMove={hasStartTime ? undefined : handleMouseMove}
+          onMouseLeave={hasStartTime ? undefined : handleMouseLeave}
+          onClick={handleLabelClick}
+        >
+          {item.name}
+        </div>
+      )}
       <div className="waterfall-item-timeline">
         {hasStartTime && (
           <div
             className={`waterfall-item-bar ${isHovered ? 'hovered' : ''} ${!hasEndTime ? 'dashed' : ''}`}
+            role={mini ? 'img' : undefined}
+            aria-label={mini ? item.name : undefined}
             style={{
               left: `${left}%`,
               width: `${width}%`,

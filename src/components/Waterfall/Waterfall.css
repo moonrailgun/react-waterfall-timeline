@@ -277,6 +277,32 @@
   opacity: 0.8;
 }
 
+/* Mini mode: 6px bars with no gap between rows, without table decoration. */
+.waterfall-container.waterfall-mini {
+  border: 0;
+  background: transparent;
+}
+
+.waterfall-mini .waterfall-body {
+  scrollbar-gutter: auto;
+}
+
+.waterfall-mini .waterfall-row {
+  border: 0;
+  background: transparent;
+}
+
+.waterfall-container.waterfall-mini .waterfall-item-bar {
+  height: 6px;
+  border-radius: 3px;
+  box-shadow: none;
+}
+
+/* interactive={false}: rows ignore the pointer, so no tooltips, hover styles or item callbacks. */
+.waterfall-static .waterfall-rows {
+  pointer-events: none;
+}
+
 /* Tooltip */
 .waterfall-item-tooltip {
   position: fixed;

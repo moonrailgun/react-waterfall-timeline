@@ -48,6 +48,10 @@ export type RenderTooltipCallback = (
 export interface WaterfallProps {
   /** Array of waterfall items to display */
   items: WaterfallItem[];
+  /** Show only 6px bars with no row gap; hide labels, ruler, markers and the hover cursor */
+  mini?: boolean;
+  /** Set false to disable tooltips, the hover cursor, and item hover/click callbacks */
+  interactive?: boolean;
   /** Persistent vertical time markers */
   markers?: WaterfallMarker[];
   /** Group headings in display order; unknown group IDs use their ID as a name */
